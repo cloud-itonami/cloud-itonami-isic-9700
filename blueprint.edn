@@ -1,0 +1,11 @@
+{:itonami.blueprint/id "cloud-itonami-9700"
+ :itonami.blueprint/name "Community Domestic Employment"
+ :itonami.blueprint/isic-rev5 "9700"
+ :itonami.blueprint/domain :work/domestic-employment
+ :itonami.blueprint/license "AGPL-3.0-or-later"
+ :itonami.blueprint/social-impact [:worker-protection :fair-pay :care-access]
+ :itonami.blueprint/governor :domestic-employment-governor
+ :itonami.blueprint/robotics true
+ :itonami.blueprint/required-technologies [:robotics :labor :identity :forms :dmn :bpmn :audit-ledger]
+ :itonami.blueprint/optional-technologies [:optimization]
+ :itonami.blueprint/status :public-oss}
