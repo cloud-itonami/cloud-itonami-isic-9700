@@ -35,6 +35,8 @@ No automated advice can dispatch a robot action the governor refuses, post a
 payroll that doesn't balance against the contract, or disclose worker data
 without governor approval and audit evidence.
 
+A live sample of the operator console is rendered in [docs/samples/operator-console.html](docs/samples/operator-console.html) — pure-data HTML output of the kotoba-lang capability UI.
+
 ## Capability layer
 
 Resolves via [`kotoba-lang/industry`](https://github.com/kotoba-lang/industry)
