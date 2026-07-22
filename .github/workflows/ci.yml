@@ -4,14 +4,18 @@ name: CI
 # capability lib -- contracts, timesheets, wages, payroll) and
 # langchain-store via in-monorepo :local/root paths
 # (../../kotoba-lang/langgraph, .../labor, .../langchain-store), and
-# the :dev alias overrides langchain the same way. Those don't resolve
+# the :dev alias overrides langchain the same way. labor's OWN deps.edn
+# in turn pins kotoba-lang/html and kotoba-lang/css via :local/root
+# (../html, ../css relative to labor) -- a transitive sibling-checkout
+# requirement, not just this repo's direct deps. None of these resolve
 # on a bare single-repo checkout, so the test job reconstructs the
-# workspace layout by checking out all four siblings (all PUBLIC) into
-# the expected relative paths -- no token needed. Same pattern as
-# cloud-itonami-isic-0111 / cloud-itonami-isic-3512 /
-# cloud-itonami-isic-8690, plus the labor checkout retailops/4711
-# (kotoba-lang/retail) and freightops/4920 (kotoba-lang/logistics)
-# established for their own capability-library deps.
+# workspace layout by checking out all six siblings (all PUBLIC) into
+# the expected relative paths -- no token needed. Same langgraph/
+# langchain/langchain-store pattern as cloud-itonami-isic-0111 /
+# cloud-itonami-isic-3512 / cloud-itonami-isic-8690; labor/html/css are
+# this vertical's own capability-library chain (kotoba-lang/retail and
+# kotoba-lang/logistics, used by the 4711/4920 siblings, pin the same
+# html/css pair).
 
 on:
   push:
@@ -52,6 +56,14 @@ jobs:
         with:
           repository: kotoba-lang/labor
           path: orgs/kotoba-lang/labor
+      - uses: actions/checkout@v4
+        with:
+          repository: kotoba-lang/html
+          path: orgs/kotoba-lang/html
+      - uses: actions/checkout@v4
+        with:
+          repository: kotoba-lang/css
+          path: orgs/kotoba-lang/css
       - uses: actions/setup-java@v4
         with: { distribution: temurin, java-version: "21" }
       - uses: DeLaGuardo/setup-clojure@13.4
