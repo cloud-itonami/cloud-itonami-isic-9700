@@ -32,10 +32,9 @@
   household-employer or worker-collective trusting an operator needs,
   and the evidence an operator needs if a dispatch or a payroll
   posting is later disputed."
-  (:require #?(:clj  [clojure.edn :as edn]
-               :cljs [cljs.reader :as edn])
-            [domesticops.registry :as registry]
-            [langchain.db :as d]))
+  (:require [domesticops.registry :as registry]
+            [langchain.db :as d]
+            [langchain-store.core :as ls]))
 
 (defprotocol Store
   (assignment [s id])
@@ -203,8 +202,8 @@
    :dispatch-sequence/jurisdiction     {:db/unique :db.unique/identity}
    :payroll-sequence/jurisdiction      {:db/unique :db.unique/identity}})
 
-(defn- enc [v] (pr-str v))
-(defn- dec* [s] (when s (edn/read-string s)))
+(defn- enc [v] (ls/enc v))
+(defn- dec* [s] (ls/dec* s))
 
 (defn- assignment->tx [{:keys [id worker household role wage-type rate hours-worked claimed-gross
                                household-employment-registered?
