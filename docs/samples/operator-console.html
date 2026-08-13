@@ -1,16 +1,668 @@
-<html><head><meta charset="utf-8"><title>cloud-itonami · domestic-employment</title><style>table { width: 100%; border-collapse: collapse; font-size: 14px; }
+<!DOCTYPE html>
+<html>
+  <head><meta charset="utf-8"><meta name="viewport" content="width=device-width, initial-scale=1"><title>cloud-itonami · domestic-employment · operator console</title><style>table { width: 100%; border-collapse: collapse; font-size: 14px; }
 .ok { color: #137a3f; }
 body { font-family: system-ui,-apple-system,sans-serif; margin: 0; color: #1a1a1a; background: #fafafa; }
+.detail { color: #444; font-size: 13px; }
 header.bar { display: flex; align-items: center; gap: 12px; padding: 12px 20px; background: #fff; border-bottom: 1px solid #e5e5e5; }
 th, td { text-align: left; padding: 8px 10px; border-bottom: 1px solid #f0f0f0; }
 h2 { margin-top: 0; font-size: 15px; }
 td.amt { font-variant-numeric: tabular-nums; text-align: right; }
+.note { font-size: 13px; color: #444; line-height: 1.6; }
 .warn { color: #b25c00; background: #fff8e1; padding: 2px 6px; border-radius: 4px; }
 main { max-width: 980px; margin: 24px auto; padding: 0 20px; }
+.summary .n { font-size: 26px; font-weight: 700; display: block; }
+.summary div { min-width: 120px; }
 header.bar h1 { font-size: 18px; margin: 0; font-weight: 600; }
 .muted { color: #888; }
 .critical { color: #fff; background: #b3261e; padding: 2px 6px; border-radius: 4px; font-weight: 600; }
 .card { background: #fff; border: 1px solid #e5e5e5; border-radius: 8px; padding: 16px; margin-bottom: 16px; }
+.summary { display: flex; gap: 24px; flex-wrap: wrap; }
+.rule { font-family: ui-monospace,SFMono-Regular,Menlo,monospace; font-size: 12px; }
 .err { color: #b3261e; background: #fbe9e7; padding: 2px 6px; border-radius: 4px; }
+.summary .k { font-size: 12px; color: #666; text-transform: uppercase; letter-spacing: 0.04em; }
 th { font-weight: 600; color: #555; font-size: 12px; text-transform: uppercase; letter-spacing: 0.04em; }
-header.bar .badge { margin-left: auto; font-size: 12px; color: #666; }</style></head><body><header class="bar"><h1>Domestic Employment — Operator Console</h1><span class="badge">read-only · governor-gated</span></header><main><section class="card"><h2>Contracts</h2><table><thead><tr><th>ID</th><th>Worker</th><th>Role</th><th>Wage</th><th class="amt">Rate</th></tr></thead><tbody><tr><td>C1</td><td>worker</td><td>nanny</td><td>hourly</td><td class="amt">1500 USD</td></tr></tbody></table></section><section class="card"><h2>Timesheets</h2><table><thead><tr><th>Worker</th><th>Date</th><th class="amt">Hours</th><th class="amt">Break</th></tr></thead><tbody><tr><td>worker</td><td>2026-07-01</td><td class="amt">8</td><td class="amt">—</td></tr></tbody></table></section><section class="card"><h2>Payroll</h2><table><thead><tr><th>ID</th><th>Worker</th><th>Period</th><th class="amt">Gross</th><th class="amt">Deductions</th><th class="amt">Net</th></tr></thead><tbody><tr><td>P1</td><td>worker</td><td>2026-07</td><td class="amt">12000 USD</td><td class="amt">2000 USD</td><td class="amt">10000 USD</td></tr></tbody></table></section></main></body></html>
+header.bar .badge { margin-left: auto; font-size: 12px; color: #666; }
+.tag { font-size: 11px; letter-spacing: 0.04em; white-space: nowrap; }</style></head>
+  <body>
+    <header class="bar">
+      <h1>Domestic Employment — Operator Console</h1>
+      <span class="badge">generated from a real actor run · governor-gated</span>
+    </header>
+    <main>
+      <section class="card">
+        <p class="note">Every row below was produced by executing this repository's own actor (domesticops.operation/build over domesticops.store/seed-db, driven through langgraph.graph/run*) at build time. No value on this page is hand-authored. Rebuild with <span class="rule">clojure -M:dev:render-html</span>.</p>
+      </section>
+      <section class="card">
+        <h2>Run summary</h2>
+        <div class="summary"><div>
+          <span class="n">12</span>
+          <span class="k">committed</span>
+        </div><div>
+          <span class="n">6</span>
+          <span class="k">governor holds (hard)</span>
+        </div><div>
+          <span class="n">0</span>
+          <span class="k">phase-gate holds</span>
+        </div><div>
+          <span class="n">0</span>
+          <span class="k">approver rejections</span>
+        </div></div>
+      </section>
+      <section class="card">
+        <h2>HARD governor holds — 6 refusals no approver can override</h2>
+        <p class="note">These are refusals by the Domestic Employment Governor itself. They are classified on the ledger fact's own type, not on the presence of a :violations entry — see the two control runs below, which also refuse to write but are NOT governor refusals.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Op</th>
+              <th>Subject</th>
+              <th>Rule</th>
+              <th>Governor's stated reason</th>
+            </tr>
+          </thead>
+          <tbody><tr>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-2</td>
+            <td class="rule">
+              <span class="critical">:no-spec-basis</span>
+            </td>
+            <td class="detail">公式spec-basisの引用が無い提案は法域要件として扱えない</td>
+          </tr><tr>
+            <td class="rule">:assignment/pay</td>
+            <td>assignment-3</td>
+            <td class="rule">
+              <span class="critical">:payroll-mismatch</span>
+            </td>
+            <td class="detail">assignment-3 の申告総支給額(10000)がkotoba.labor/wages-forの独立再計算値(8000)と一致しない</td>
+          </tr><tr>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-4</td>
+            <td class="rule">
+              <span class="critical">:household-employment-unregistered</span>
+            </td>
+            <td class="detail">assignment-4 の世帯主(雇用主)登録が未完了</td>
+          </tr><tr>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-5</td>
+            <td class="rule">
+              <span class="critical">:vulnerable-person-safeguarding-check-missing</span>
+            </td>
+            <td class="detail">assignment-5 は児童/高齢者の世話を伴うが身元確認が未完了 -- 派遣提案は進められない</td>
+          </tr><tr>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-1</td>
+            <td class="rule">
+              <span class="critical">:already-dispatched</span>
+            </td>
+            <td class="detail">assignment-1 は既に派遣済み</td>
+          </tr><tr>
+            <td class="rule">:assignment/pay</td>
+            <td>assignment-1</td>
+            <td class="rule">
+              <span class="critical">:already-paid</span>
+            </td>
+            <td class="detail">assignment-1 は既に支払済み</td>
+          </tr></tbody>
+        </table>
+      </section>
+      <section class="card">
+        <h2>Operations (18 ledger facts)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Op</th>
+              <th>Subject</th>
+              <th>Scenario</th>
+              <th>Outcome</th>
+              <th class="amt">Confidence</th>
+            </tr>
+          </thead>
+          <tbody><tr>
+            <td class="rule">:assignment/intake</td>
+            <td>assignment-1</td>
+            <td class="detail">intake assignment-1 (clean, no vulnerable person)</td>
+            <td>
+              <span class="tag ok">committed</span>
+            </td>
+            <td class="amt">0.97</td>
+          </tr><tr>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-1</td>
+            <td class="detail">assess jurisdiction for assignment-1 (human approves)</td>
+            <td>
+              <span class="tag ok">committed</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr><tr>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-1</td>
+            <td class="detail">dispatch assignment-1 (actuation -- human approves)</td>
+            <td>
+              <span class="tag ok">committed</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr><tr>
+            <td class="rule">:assignment/pay</td>
+            <td>assignment-1</td>
+            <td class="detail">pay assignment-1 (actuation -- human approves)</td>
+            <td>
+              <span class="tag ok">committed</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr><tr>
+            <td class="rule">:assignment/intake</td>
+            <td>assignment-6</td>
+            <td class="detail">intake assignment-6 (vulnerable person, safeguarding verified)</td>
+            <td>
+              <span class="tag ok">committed</span>
+            </td>
+            <td class="amt">0.97</td>
+          </tr><tr>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-6</td>
+            <td class="detail">assess jurisdiction for assignment-6 (human approves)</td>
+            <td>
+              <span class="tag ok">committed</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr><tr>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-6</td>
+            <td class="detail">dispatch assignment-6 (safeguarding verified -- passes)</td>
+            <td>
+              <span class="tag ok">committed</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr><tr>
+            <td class="rule">:assignment/pay</td>
+            <td>assignment-6</td>
+            <td class="detail">pay assignment-6 (actuation -- human approves)</td>
+            <td>
+              <span class="tag ok">committed</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr><tr>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-2</td>
+            <td class="detail">assess assignment-2 -- jurisdiction ATL has no spec-basis</td>
+            <td>
+              <span class="tag critical">GOVERNOR HOLD (hard)</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr><tr>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-3</td>
+            <td class="detail">assess jurisdiction for assignment-3 (sets up payroll test)</td>
+            <td>
+              <span class="tag ok">committed</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr><tr>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-3</td>
+            <td class="detail">dispatch assignment-3 (human approves)</td>
+            <td>
+              <span class="tag ok">committed</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr><tr>
+            <td class="rule">:assignment/pay</td>
+            <td>assignment-3</td>
+            <td class="detail">pay assignment-3 -- claimed gross disagrees with kotoba.labor recompute</td>
+            <td>
+              <span class="tag critical">GOVERNOR HOLD (hard)</span>
+            </td>
+            <td class="amt">0.3</td>
+          </tr><tr>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-4</td>
+            <td class="detail">assess jurisdiction for assignment-4 (sets up registration test)</td>
+            <td>
+              <span class="tag ok">committed</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr><tr>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-4</td>
+            <td class="detail">dispatch assignment-4 -- household employer not registered</td>
+            <td>
+              <span class="tag critical">GOVERNOR HOLD (hard)</span>
+            </td>
+            <td class="amt">0.3</td>
+          </tr><tr>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-5</td>
+            <td class="detail">assess jurisdiction for assignment-5 (sets up safeguarding test)</td>
+            <td>
+              <span class="tag ok">committed</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr><tr>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-5</td>
+            <td class="detail">dispatch assignment-5 -- cares for a vulnerable person, no safeguarding check</td>
+            <td>
+              <span class="tag critical">GOVERNOR HOLD (hard)</span>
+            </td>
+            <td class="amt">0.3</td>
+          </tr><tr>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-1</td>
+            <td class="detail">dispatch assignment-1 AGAIN -- double dispatch</td>
+            <td>
+              <span class="tag critical">GOVERNOR HOLD (hard)</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr><tr>
+            <td class="rule">:assignment/pay</td>
+            <td>assignment-1</td>
+            <td class="detail">pay assignment-1 AGAIN -- double payroll posting</td>
+            <td>
+              <span class="tag critical">GOVERNOR HOLD (hard)</span>
+            </td>
+            <td class="amt">0.9</td>
+          </tr></tbody>
+        </table>
+      </section>
+      <section class="card">
+        <h2>Control runs — refusals that are NOT governor refusals</h2>
+        <p class="note">Each control runs against its own fresh store so it cannot perturb the registers above. Both refuse to write. Neither is counted as a governor hold. Note that the approver rejection carries a :violations entry while the phase-gate hold carries none — which is why :violations alone cannot be the discriminator.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Control</th>
+              <th>Scenario</th>
+              <th>Outcome</th>
+              <th>Fact :t</th>
+              <th>:phase-reason</th>
+              <th>:violations</th>
+            </tr>
+          </thead>
+          <tbody><tr>
+            <td class="rule">:phase-gate</td>
+            <td class="detail">intake assignment-1 at phase 0 (read-only rollout phase)</td>
+            <td>
+              <span class="tag warn">phase gate</span>
+            </td>
+            <td class="rule">:governor-hold</td>
+            <td class="rule">:phase-disabled</td>
+            <td class="rule">—</td>
+          </tr><tr>
+            <td class="rule">:approver-rejection</td>
+            <td class="detail">assess jurisdiction for assignment-1, human operator declines</td>
+            <td>
+              <span class="tag err">approver rejected</span>
+            </td>
+            <td class="rule">:approval-rejected</td>
+            <td class="rule">—</td>
+            <td class="rule">:approver-rejected</td>
+          </tr></tbody>
+        </table>
+      </section>
+      <section class="card">
+        <h2>Assignment register (6)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>ID</th>
+              <th>Worker</th>
+              <th>Household</th>
+              <th>Role</th>
+              <th class="amt">Rate</th>
+              <th class="amt">Hours</th>
+              <th class="amt">Claimed gross</th>
+              <th>Registered?</th>
+              <th>Vulnerable?</th>
+              <th>Safeguarded?</th>
+              <th>Dispatch no.</th>
+              <th>Payroll no.</th>
+            </tr>
+          </thead>
+          <tbody><tr>
+            <td class="rule">assignment-1</td>
+            <td>Kita Sato</td>
+            <td>Tanaka Household</td>
+            <td>housekeeper</td>
+            <td class="amt">1500</td>
+            <td class="amt">8</td>
+            <td class="amt">12000</td>
+            <td>
+              <span class="ok">true</span>
+            </td>
+            <td>false</td>
+            <td>
+              <span class="muted">false</span>
+            </td>
+            <td class="rule">JPN-DSP-000000</td>
+            <td class="rule">JPN-PAY-000000</td>
+          </tr><tr>
+            <td class="rule">assignment-2</td>
+            <td>Atlantis Ann</td>
+            <td>Atlantis Household</td>
+            <td>housekeeper</td>
+            <td class="amt">1500</td>
+            <td class="amt">6</td>
+            <td class="amt">9000</td>
+            <td>
+              <span class="ok">true</span>
+            </td>
+            <td>false</td>
+            <td>
+              <span class="muted">false</span>
+            </td>
+            <td class="rule">—</td>
+            <td class="rule">—</td>
+          </tr><tr>
+            <td class="rule">assignment-3</td>
+            <td>Minami Hana</td>
+            <td>Yamada Household</td>
+            <td>gardener</td>
+            <td class="amt">1600</td>
+            <td class="amt">5</td>
+            <td class="amt">10000</td>
+            <td>
+              <span class="ok">true</span>
+            </td>
+            <td>false</td>
+            <td>
+              <span class="muted">false</span>
+            </td>
+            <td class="rule">JPN-DSP-000002</td>
+            <td class="rule">—</td>
+          </tr><tr>
+            <td class="rule">assignment-4</td>
+            <td>Higashi Ichiro</td>
+            <td>Suzuki Household</td>
+            <td>housekeeper</td>
+            <td class="amt">1500</td>
+            <td class="amt">7</td>
+            <td class="amt">10500</td>
+            <td>
+              <span class="critical">false</span>
+            </td>
+            <td>false</td>
+            <td>
+              <span class="muted">false</span>
+            </td>
+            <td class="rule">—</td>
+            <td class="rule">—</td>
+          </tr><tr>
+            <td class="rule">assignment-5</td>
+            <td>Nishi Kenji</td>
+            <td>Ito Household</td>
+            <td>nanny</td>
+            <td class="amt">1800</td>
+            <td class="amt">8</td>
+            <td class="amt">14400</td>
+            <td>
+              <span class="ok">true</span>
+            </td>
+            <td>true</td>
+            <td>
+              <span class="muted">false</span>
+            </td>
+            <td class="rule">—</td>
+            <td class="rule">—</td>
+          </tr><tr>
+            <td class="rule">assignment-6</td>
+            <td>Chuo Yuki</td>
+            <td>Watanabe Household</td>
+            <td>nanny</td>
+            <td class="amt">1800</td>
+            <td class="amt">8</td>
+            <td class="amt">14400</td>
+            <td>
+              <span class="ok">true</span>
+            </td>
+            <td>true</td>
+            <td>
+              <span class="ok">true</span>
+            </td>
+            <td class="rule">JPN-DSP-000001</td>
+            <td class="rule">JPN-PAY-000001</td>
+          </tr></tbody>
+        </table>
+      </section>
+      <section class="card">
+        <h2>Mission-dispatch register (3)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Record ID</th>
+              <th>Kind</th>
+              <th>Assignment</th>
+              <th>Jurisdiction</th>
+              <th>Immutable</th>
+            </tr>
+          </thead>
+          <tbody><tr>
+            <td class="rule">JPN-DSP-000000</td>
+            <td>mission-dispatch-draft</td>
+            <td class="rule">assignment-1</td>
+            <td>JPN</td>
+            <td>true</td>
+          </tr><tr>
+            <td class="rule">JPN-DSP-000001</td>
+            <td>mission-dispatch-draft</td>
+            <td class="rule">assignment-6</td>
+            <td>JPN</td>
+            <td>true</td>
+          </tr><tr>
+            <td class="rule">JPN-DSP-000002</td>
+            <td>mission-dispatch-draft</td>
+            <td class="rule">assignment-3</td>
+            <td>JPN</td>
+            <td>true</td>
+          </tr></tbody>
+        </table>
+      </section>
+      <section class="card">
+        <h2>Payroll-posting register (2)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>Record ID</th>
+              <th>Kind</th>
+              <th>Assignment</th>
+              <th>Jurisdiction</th>
+              <th>Immutable</th>
+            </tr>
+          </thead>
+          <tbody><tr>
+            <td class="rule">JPN-PAY-000000</td>
+            <td>payroll-posting-draft</td>
+            <td class="rule">assignment-1</td>
+            <td>JPN</td>
+            <td>true</td>
+          </tr><tr>
+            <td class="rule">JPN-PAY-000001</td>
+            <td>payroll-posting-draft</td>
+            <td class="rule">assignment-6</td>
+            <td>JPN</td>
+            <td>true</td>
+          </tr></tbody>
+        </table>
+      </section>
+      <section class="card">
+        <h2>Approver attribution — measured on this run</h2>
+        <p class="note">Derived at render time by scanning each committed record for an approver-shaped key. The ledger's :actor field is excluded, because it names the EXECUTING actor rather than the human who approved.</p>
+        <table>
+          <thead>
+            <tr>
+              <th>Effect</th>
+              <th class="amt">Records</th>
+              <th>Human-approved on this run</th>
+              <th>Approver key retained</th>
+            </tr>
+          </thead>
+          <tbody><tr>
+            <td class="rule">:assessment/set</td>
+            <td class="amt">5</td>
+            <td>true</td>
+            <td>
+              <span class="ok">:approved-by</span>
+            </td>
+          </tr><tr>
+            <td class="rule">:assignment/mark-dispatched</td>
+            <td class="amt">3</td>
+            <td>true</td>
+            <td>
+              <span class="critical">not retained</span>
+            </td>
+          </tr><tr>
+            <td class="rule">:assignment/mark-paid</td>
+            <td class="amt">2</td>
+            <td>true</td>
+            <td>
+              <span class="critical">not retained</span>
+            </td>
+          </tr></tbody>
+        </table>
+        <p class="note"><span class="critical">DISCLOSED DEFECT</span> — 2 effect(s) committed after an explicit human approval do not persist the approver's identity: :assignment/mark-dispatched, :assignment/mark-paid. The approval is recorded in the run's audit channel, but the record written to the SSoT drops it, so the register alone cannot answer &quot;who authorised this?&quot;. This is reported, not patched: changing the governor or the store is out of scope for a rendering task.</p>
+      </section>
+      <section class="card">
+        <h2>Audit ledger (18 append-only facts)</h2>
+        <table>
+          <thead>
+            <tr>
+              <th>#</th>
+              <th>:t</th>
+              <th>Op</th>
+              <th>Subject</th>
+              <th>Disposition</th>
+              <th>Basis</th>
+            </tr>
+          </thead>
+          <tbody><tr>
+            <td class="amt">0</td>
+            <td class="rule">:committed</td>
+            <td class="rule">:assignment/intake</td>
+            <td>assignment-1</td>
+            <td>:commit</td>
+            <td class="detail">:id, :worker</td>
+          </tr><tr>
+            <td class="amt">1</td>
+            <td class="rule">:committed</td>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-1</td>
+            <td>:commit</td>
+            <td class="detail">労働保険の保険料の徴収等に関する法律 (家事使用人特例) 及び 健康保険法/厚生年金保険法, https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/kaigai02.html</td>
+          </tr><tr>
+            <td class="amt">2</td>
+            <td class="rule">:committed</td>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-1</td>
+            <td>:commit</td>
+            <td class="detail">assignment-1</td>
+          </tr><tr>
+            <td class="amt">3</td>
+            <td class="rule">:committed</td>
+            <td class="rule">:assignment/pay</td>
+            <td>assignment-1</td>
+            <td>:commit</td>
+            <td class="detail">assignment-1</td>
+          </tr><tr>
+            <td class="amt">4</td>
+            <td class="rule">:committed</td>
+            <td class="rule">:assignment/intake</td>
+            <td>assignment-6</td>
+            <td>:commit</td>
+            <td class="detail">:id, :worker</td>
+          </tr><tr>
+            <td class="amt">5</td>
+            <td class="rule">:committed</td>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-6</td>
+            <td>:commit</td>
+            <td class="detail">労働保険の保険料の徴収等に関する法律 (家事使用人特例) 及び 健康保険法/厚生年金保険法, https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/kaigai02.html</td>
+          </tr><tr>
+            <td class="amt">6</td>
+            <td class="rule">:committed</td>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-6</td>
+            <td>:commit</td>
+            <td class="detail">assignment-6</td>
+          </tr><tr>
+            <td class="amt">7</td>
+            <td class="rule">:committed</td>
+            <td class="rule">:assignment/pay</td>
+            <td>assignment-6</td>
+            <td>:commit</td>
+            <td class="detail">assignment-6</td>
+          </tr><tr>
+            <td class="amt">8</td>
+            <td class="rule">:governor-hold</td>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-2</td>
+            <td>:hold</td>
+            <td class="detail">:no-spec-basis</td>
+          </tr><tr>
+            <td class="amt">9</td>
+            <td class="rule">:committed</td>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-3</td>
+            <td>:commit</td>
+            <td class="detail">労働保険の保険料の徴収等に関する法律 (家事使用人特例) 及び 健康保険法/厚生年金保険法, https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/kaigai02.html</td>
+          </tr><tr>
+            <td class="amt">10</td>
+            <td class="rule">:committed</td>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-3</td>
+            <td>:commit</td>
+            <td class="detail">assignment-3</td>
+          </tr><tr>
+            <td class="amt">11</td>
+            <td class="rule">:governor-hold</td>
+            <td class="rule">:assignment/pay</td>
+            <td>assignment-3</td>
+            <td>:hold</td>
+            <td class="detail">:payroll-mismatch</td>
+          </tr><tr>
+            <td class="amt">12</td>
+            <td class="rule">:committed</td>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-4</td>
+            <td>:commit</td>
+            <td class="detail">労働保険の保険料の徴収等に関する法律 (家事使用人特例) 及び 健康保険法/厚生年金保険法, https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/kaigai02.html</td>
+          </tr><tr>
+            <td class="amt">13</td>
+            <td class="rule">:governor-hold</td>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-4</td>
+            <td>:hold</td>
+            <td class="detail">:household-employment-unregistered</td>
+          </tr><tr>
+            <td class="amt">14</td>
+            <td class="rule">:committed</td>
+            <td class="rule">:jurisdiction/assess</td>
+            <td>assignment-5</td>
+            <td>:commit</td>
+            <td class="detail">労働保険の保険料の徴収等に関する法律 (家事使用人特例) 及び 健康保険法/厚生年金保険法, https://www.mhlw.go.jp/stf/seisakunitsuite/bunya/koyou_roudou/roudoukijun/kaigai02.html</td>
+          </tr><tr>
+            <td class="amt">15</td>
+            <td class="rule">:governor-hold</td>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-5</td>
+            <td>:hold</td>
+            <td class="detail">:vulnerable-person-safeguarding-check-missing</td>
+          </tr><tr>
+            <td class="amt">16</td>
+            <td class="rule">:governor-hold</td>
+            <td class="rule">:assignment/dispatch</td>
+            <td>assignment-1</td>
+            <td>:hold</td>
+            <td class="detail">:already-dispatched</td>
+          </tr><tr>
+            <td class="amt">17</td>
+            <td class="rule">:governor-hold</td>
+            <td class="rule">:assignment/pay</td>
+            <td>assignment-1</td>
+            <td>:hold</td>
+            <td class="detail">:already-paid</td>
+          </tr></tbody>
+        </table>
+      </section>
+    </main>
+  </body>
+</html>

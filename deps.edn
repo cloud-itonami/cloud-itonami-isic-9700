@@ -29,6 +29,11 @@
          {:local/root "../../kotoba-lang/langchain"}}}
   ;; clojure -M:dev:run  -> drive the demo through one OperationActor
   :run {:main-opts ["-m" "domesticops.sim"]}
+  ;; clojure -M:dev:render-html  -> RUN the actor and render
+  ;; docs/samples/operator-console.html from the real run output.
+  ;; Throws (and writes nothing) if the run produces zero hard governor
+  ;; holds. Pass a path to render somewhere else.
+  :render-html {:main-opts ["-m" "domesticops.render-html"]}
   :test {:extra-paths ["test"]
          :extra-deps {io.github.cognitect-labs/test-runner
                       {:git/tag "v0.5.1" :git/sha "dfb30dd"}}
