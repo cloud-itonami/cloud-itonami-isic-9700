@@ -24,9 +24,14 @@
   governor verdict of any kind while badging itself `governor-gated`.
   This build supersedes it.
 
-  Styling uses `css.core/operator-theme` + `html.core` -- the shared
-  cloud-itonami operator-console theme, reached transitively through
-  `io.github.kotoba-lang/labor`. This repo does not depend on jp-go-dds.
+  Styling is jp-go-dds (デジタル庁デザインシステム), this workspace's
+  BASE design system. It is applied through `jp-go-dds.skin/dds+skin`,
+  the compat skin written FOR these cloud-itonami operator consoles:
+  it restyles semantic markup plus a small class vocabulary
+  (`.card` `.badge` `.tag` `.ok` `.warn` `.err` `.critical` `.muted`
+  `.amt`) with CSS alone, so adopting DADS reshaped no markup and
+  dropped no section. `extra-rules` below adds only what the skin does
+  not carry, in DADS custom properties -- no raw hex.
 
   Determinism: the page contains no wall-clock value and no per-run
   identifier. Building twice yields byte-identical output."
@@ -34,6 +39,7 @@
             [clojure.string :as str]
             [css.core :as css]
             [html.core :as html]
+            [jp-go-dds.skin :as skin]
             [langgraph.graph :as g]
             [domesticops.operation :as op]
             [domesticops.store :as store]))
@@ -132,6 +138,14 @@
     :label "intake assignment-6 (vulnerable person, safeguarding verified)"
     :request {:op :assignment/intake :subject "assignment-6"
               :patch {:id "assignment-6" :worker "Chuo Yuki"}}}
+   ;; Ordering violation, deliberately placed BEFORE t6: assignment-6 is
+   ;; registered, safeguarded and in a jurisdiction that HAS a spec, so
+   ;; the only thing wrong with dispatching it here is that its
+   ;; jurisdiction has not been assessed yet -- which isolates
+   ;; :evidence-incomplete to a single violation on a single row.
+   {:tid "t5b" :intent :refusal
+    :label "dispatch assignment-6 BEFORE its jurisdiction is assessed"
+    :request {:op :assignment/dispatch :subject "assignment-6"}}
    {:tid "t6" :intent :clean :approval {:status :approved :by "op-1"}
     :label "assess jurisdiction for assignment-6 (human approves)"
     :request {:op :jurisdiction/assess :subject "assignment-6"}}
@@ -313,18 +327,32 @@
     :else (str v)))
 
 (def ^:private extra-rules
-  {".tag"        {:font-size 11 :letter-spacing "0.04em" :white-space :nowrap}
-   ".rule"       {:font-family "ui-monospace,SFMono-Regular,Menlo,monospace"
-                  :font-size 12}
-   ".detail"     {:color "#444" :font-size 13}
-   ".summary"    {:display :flex :gap 24 :flex-wrap :wrap}
-   ".summary div" {:min-width 120}
-   ".summary .n" {:font-size 26 :font-weight 700 :display :block}
-   ".summary .k" {:font-size 12 :color "#666" :text-transform :uppercase
-                  :letter-spacing "0.04em"}
-   ".note"       {:font-size 13 :color "#444" :line-height 1.6}})
+  "The few rules the DADS compat skin does not carry, emitted AFTER
+  `dds.css` + `skin-css` so they win the cascade. A vector (not a map)
+  because CSS is order-sensitive. Colours and type reference DADS
+  custom properties only -- no raw hex."
+  [[".rule"        {:font-family "var(--font-family-mono)"
+                    :font-variant-numeric "tabular-nums"
+                    :font-size ".8125rem"}]
+   [".detail"      {:color "var(--color-neutral-solid-gray-700)"
+                    :font-size ".875rem"}]
+   ["td.amt"       {:text-align "right"}]
+   [".summary"     {:display "flex" :gap "1.5rem" :flex-wrap "wrap"}]
+   [".summary div" {:min-width "9rem"}]
+   [".summary .n"  {:display "block" :font-size "1.75rem" :font-weight 700
+                    :font-family "var(--font-family-mono)"
+                    :font-variant-numeric "tabular-nums"
+                    :color "var(--color-neutral-solid-gray-900)"}]
+   [".summary .k"  {:font-size ".75rem" :text-transform "uppercase"
+                    :letter-spacing ".04em"
+                    :color "var(--color-neutral-solid-gray-600)"}]
+   ["header.bar"   {:margin-bottom "1.5rem"}]
+   ["header.bar h1" {:margin 0}]
+   ["header.bar .badge" {:margin-left "auto"}]])
 
-(def ^:private sheet (css/merge-theme extra-rules))
+(def ^:private sheet-css
+  "vendored DADS stylesheet + compat skin + this page's few extras."
+  (str (skin/dds+skin) "\n" (css/css {:rules extra-rules})))
 
 (defn- tag [class-kw]
   [:span {:class (str "tag " (class-css class-kw))} (class-label class-kw)])
@@ -491,7 +519,7 @@
      [:meta {:charset "utf-8"}]
      [:meta {:name "viewport" :content "width=device-width, initial-scale=1"}]
      [:title "cloud-itonami · domestic-employment · operator console"]
-     [:hiccup/raw (html/->html (css/style-node sheet))]]
+     [:hiccup/raw (html/->html [:style [:hiccup/raw sheet-css]])]]
     [:body
      [:header.bar
       [:h1 "Domestic Employment — Operator Console"]

@@ -13,7 +13,17 @@
  ;; capability-library-wrapping vertical in this fleet, after
  ;; retailops/4711 (kotoba-lang/retail) and freightops/4920
  ;; (kotoba-lang/logistics).
- :deps {io.github.kotoba-lang/langgraph
+ :deps {;; jp-go-dds: デジタル庁デザインシステム(DADS) -- this workspace's BASE
+        ;; design system (CLAUDE.md, repo-wide mandatory 2026-08-05). The
+        ;; operator console is styled through `jp-go-dds.skin/dds+skin`,
+        ;; the compat skin written FOR these cloud-itonami consoles: it
+        ;; restyles the existing semantic markup + small class vocabulary
+        ;; (.card/.badge/.tag/.ok/.warn/.err/.critical/.muted/.amt) via
+        ;; CSS only, so no markup was reshaped to adopt it.
+        io.github.kotoba-lang/jp-go-digital-design-system
+        {:git/url "https://github.com/kotoba-lang/jp-go-digital-design-system"
+         :git/sha "83db99546eabc53613ae826ea41d1533a3c574af"}
+        io.github.kotoba-lang/langgraph
         {:local/root "../../kotoba-lang/langgraph"}
         io.github.kotoba-lang/labor
         {:local/root "../../kotoba-lang/labor"}
