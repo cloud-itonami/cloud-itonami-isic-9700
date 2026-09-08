@@ -36,7 +36,7 @@
   Determinism: the page contains no wall-clock value and no per-run
   identifier. Building twice yields byte-identical output."
   (:require [clojure.java.io :as io]
-            [clojure.string :as str]
+            [kotoba.lang.text :as str]
             [css.core :as css]
             [html.core :as html]
             [jp-go-dds.skin :as skin]
