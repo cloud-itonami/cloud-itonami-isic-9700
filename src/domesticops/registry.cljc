@@ -31,7 +31,7 @@
   would keep, not the act of dispatching a mission or posting payroll
   itself (that is `domesticops.operation`'s `:assignment/dispatch`/
   `:assignment/pay`, always human-gated -- see README `Actuation`)."
-  (:require [clojure.string :as str]
+  (:require [kotoba.lang.text :as str]
             [kotoba.labor :as labor]))
 
 (defn- unsigned-certificate
@@ -90,7 +90,7 @@
     (throw (ex-info "mission-dispatch: jurisdiction required" {})))
   (when (< sequence 0)
     (throw (ex-info "mission-dispatch: sequence must be >= 0" {})))
-  (let [dispatch-number (str (str/upper-case jurisdiction) "-DSP-" (zero-pad sequence 6))
+  (let [dispatch-number (str (str/upper jurisdiction) "-DSP-" (zero-pad sequence 6))
         record {"record_id" dispatch-number
                 "kind" "mission-dispatch-draft"
                 "assignment_id" assignment-id
@@ -115,7 +115,7 @@
     (throw (ex-info "payroll-posting: jurisdiction required" {})))
   (when (< sequence 0)
     (throw (ex-info "payroll-posting: sequence must be >= 0" {})))
-  (let [payroll-number (str (str/upper-case jurisdiction) "-PAY-" (zero-pad sequence 6))
+  (let [payroll-number (str (str/upper jurisdiction) "-PAY-" (zero-pad sequence 6))
         record {"record_id" payroll-number
                 "kind" "payroll-posting-draft"
                 "assignment_id" assignment-id
