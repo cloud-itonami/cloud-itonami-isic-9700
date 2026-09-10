@@ -70,7 +70,7 @@ Two independent layers enforce this (`domesticops.governor`'s
 `:actuation/dispatch-mission`/`:actuation/post-payroll` high-stakes
 gate and `domesticops.phase`'s phase table, which never puts either
 op in any phase's `:auto` set) -- see `domesticops.phase`'s docstring
-and `test/domesticops/phase_test.clj`'s `assignment-dispatch-never-
+and `test/domesticops/phase_test.kotoba`'s `assignment-dispatch-never-
 auto-at-any-phase`/`assignment-pay-never-auto-at-any-phase`. The
 actor may draft, check and recommend; a human household-employer/
 agency coordinator is always the one who actually dispatches a
@@ -173,14 +173,14 @@ This blueprint resolves its technology stack via
 
 | File | Role |
 |---|---|
-| `src/domesticops/store.cljc` | **Store** protocol -- `MemStore` ‖ `DatomicStore` (`langchain.db`) + append-only audit ledger + dispatch AND payroll history (dual history). The double-actuation guard checks dedicated `:dispatched?`/`:paid?` booleans rather than a `:status` value |
-| `src/domesticops/registry.cljc` | Dispatch/payroll draft records, plus `payroll-matches-contract?` -- delegates DIRECTLY to `kotoba.labor/wages-for` rather than reimplementing wage arithmetic |
-| `src/domesticops/facts.cljc` | Per-jurisdiction household-employer-registration AND vulnerable-person-safeguarding catalog with an official spec-basis citation per entry, honest coverage reporting -- ALL FOUR seeded jurisdictions have a safeguarding sub-citation here |
-| `src/domesticops/domesticopsllm.cljc` | **DomesticOps-LLM** -- `mock-advisor` ‖ `llm-advisor`; intake/jurisdiction-assessment/dispatch/payroll proposals |
-| `src/domesticops/governor.cljc` | **Domestic Employment Governor** -- 5 HARD checks (spec-basis · evidence-incomplete · household-employment-unregistered, FLAGSHIP NEW, the 90th unconditional-evaluation-discipline grounding · payroll-mismatch, delegates to `kotoba.labor` · vulnerable-person-safeguarding-check-missing, CONDITIONAL, the 91st grounding) + 2 double-actuation guards + 1 soft (confidence/actuation gate) |
-| `src/domesticops/phase.cljc` | **Phase 0→3** -- read-only → assisted intake → assisted assess → supervised (dispatch/pay always human; assignment intake is the ONLY auto-eligible op, no direct household-facing risk) |
-| `src/domesticops/operation.cljc` | **OperationActor** -- langgraph StateGraph |
-| `src/domesticops/sim.cljc` | demo driver |
+| `src/domesticops/store.kotoba` | **Store** protocol -- `MemStore` ‖ `DatomicStore` (`langchain.db`) + append-only audit ledger + dispatch AND payroll history (dual history). The double-actuation guard checks dedicated `:dispatched?`/`:paid?` booleans rather than a `:status` value |
+| `src/domesticops/registry.kotoba` | Dispatch/payroll draft records, plus `payroll-matches-contract?` -- delegates DIRECTLY to `kotoba.labor/wages-for` rather than reimplementing wage arithmetic |
+| `src/domesticops/facts.kotoba` | Per-jurisdiction household-employer-registration AND vulnerable-person-safeguarding catalog with an official spec-basis citation per entry, honest coverage reporting -- ALL FOUR seeded jurisdictions have a safeguarding sub-citation here |
+| `src/domesticops/domesticopsllm.kotoba` | **DomesticOps-LLM** -- `mock-advisor` ‖ `llm-advisor`; intake/jurisdiction-assessment/dispatch/payroll proposals |
+| `src/domesticops/governor.kotoba` | **Domestic Employment Governor** -- 5 HARD checks (spec-basis · evidence-incomplete · household-employment-unregistered, FLAGSHIP NEW, the 90th unconditional-evaluation-discipline grounding · payroll-mismatch, delegates to `kotoba.labor` · vulnerable-person-safeguarding-check-missing, CONDITIONAL, the 91st grounding) + 2 double-actuation guards + 1 soft (confidence/actuation gate) |
+| `src/domesticops/phase.kotoba` | **Phase 0→3** -- read-only → assisted intake → assisted assess → supervised (dispatch/pay always human; assignment intake is the ONLY auto-eligible op, no direct household-facing risk) |
+| `src/domesticops/operation.kotoba` | **OperationActor** -- langgraph StateGraph |
+| `src/domesticops/sim.kotoba` | demo driver |
 | `test/domesticops/*_test.clj` | governor contract · phase invariants · store parity · registry conformance · facts coverage |
 
 ## Business-process coverage (honest)

@@ -136,7 +136,7 @@ prior governor's guards establish, informed by
 `domesticops.store/Store` is implemented by both `MemStore` (atom-
 backed, default for dev/tests/demo) and `DatomicStore` (`langchain.
 db`-backed), proven to satisfy the same contract in
-`test/domesticops/store_contract_test.clj`.
+`test/domesticops/store_contract_test.kotoba`.
 
 ### Decision 9: real capability library, no `blueprint.edn` field-sync fixes needed
 
@@ -187,7 +187,7 @@ dispatching a mission or auto-posting payroll).
   check-missing?` (91st distinct application overall, the FIFTEENTH
   conditional variant).
 - `MemStore` ‖ `DatomicStore` parity is proven by
-  `test/domesticops/store_contract_test.clj`.
+  `test/domesticops/store_contract_test.kotoba`.
 - 40 tests / 177 assertions pass (one extra test covering the
   capability-library-wrap's own unknown-wage-type edge case); lint is
   clean; the demo (`clojure -M:dev:run`) walks two clean dispatch+pay
