@@ -1,5 +1,5 @@
 (ns domesticops.sim
-  "Demo driver -- `clojure -M:dev:run`. Walks a clean assignment
+  "Demo driver -- `kbb -M:dev:run`. Walks a clean assignment
   through intake -> jurisdiction assessment -> mission dispatch
   (escalate/approve/commit) -> payroll posting (escalate/approve/
   commit), then a SEPARATE clean vulnerable-person assignment through
