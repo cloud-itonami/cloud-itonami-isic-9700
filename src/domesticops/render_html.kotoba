@@ -531,7 +531,7 @@
         "(domesticops.operation/build over domesticops.store/seed-db, driven "
         "through langgraph.graph/run*) at build time. No value on this page is "
         "hand-authored. Rebuild with "
-        [:span.rule "clojure -M:dev:render-html"] "."]]
+        [:span.rule "kbb -M:dev:render-html"] "."]]
       (summary-section model)
       (holds-section model)
       (scenario-section model)

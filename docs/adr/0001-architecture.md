@@ -190,7 +190,7 @@ dispatching a mission or auto-posting payroll).
   `test/domesticops/store_contract_test.kotoba`.
 - 40 tests / 177 assertions pass (one extra test covering the
   capability-library-wrap's own unknown-wage-type edge case); lint is
-  clean; the demo (`clojure -M:dev:run`) walks two clean dispatch+pay
+  clean; the demo (`kbb -M:dev:run`) walks two clean dispatch+pay
   lifecycles (no vulnerable person, vulnerable person with
   safeguarding verified), plus four HARD-hold scenarios, end-to-end.
 - `blueprint.edn` needed no field-sync fix this time -- only the
