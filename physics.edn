@@ -1,0 +1,32 @@
+;; What this vertical's robot physically does, declared for
+;; kotoba.robotics.process (kotoba-lang/robotics). `kbb -M:dev:physics` runs it.
+;;
+;; README "Robotics premise": a household service robot (cleaning,
+;; assistive-care, garden) performs the domestic task under the actor, gated
+;; by the Domestic Employment Governor (ISIC 9700). Its physical work here is
+;; watering the garden through a hose from the outdoor tap, and lifting the
+;; laundry basket up onto the drying rack.
+;;
+;; Every number without a cited source is marked `estimate` in its :basis.
+;; Replacing an estimate with a sourced value is this bot's growth work.
+{:physics/schema "itonami.physical-ai.spec.v1"
+ :repo "cloud-itonami/cloud-itonami-isic-9700"
+ :cases
+ [{:id :garden-hose-watering
+   :kind :pipe-flow
+   :procedure "robot drags a 20 m, 12.7 mm (1/2 inch) garden hose from the outdoor tap and waters the beds; the sweep is the flow it asks for"
+   :params {:diameter-m 0.0127 :length-m 20.0 :roughness-m 1.5e-6
+            :density-kg-m3 998.0 :viscosity-pa-s 1.0e-3 :pump-efficiency 0.65 :elevation-m 1.0}
+   :sweep {:param :q-m3s :values [8.3e-5 1.67e-4 2.5e-4 3.33e-4 4.17e-4]}
+   :quantity :pressure-drop-pa
+   :limit {:max 150000.0 :basis "estimate: hose loss must leave usable nozzle pressure from a ~200-250 kPa household supply; the sweep is 5/10/15/20/25 L/min, smooth-plastic hose roughness is an estimate"}
+   :boundary {:lo 1.0e-5 :hi 1.0e-3}}
+  {:id :laundry-basket-onto-rack
+   :kind :manipulator
+   :procedure "arm lifts the basket of washed laundry from the floor onto the drying rack shelf"
+   :params {:l1-m 0.45 :l2-m 0.40 :m1-kg 4.0 :m2-kg 3.0
+            :from [0.50 0.05] :to [0.30 0.70] :duration-s 2.5 :steps 500}
+   :sweep {:param :payload-kg :values [2.0 4.0 6.0 8.0 10.0]}
+   :quantity :peak-tau1-nm
+   :limit {:max 60.0 :basis "estimate: continuous shoulder torque of a domestic-service arm (~5 kg class) that is safe to run near people"}
+   :boundary {:lo 0.2 :hi 30.0}}]}
