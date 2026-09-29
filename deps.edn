@@ -23,7 +23,7 @@
         ;; this repo silently rides whatever a sibling happens to name.
         io.github.kotoba-lang/text {:git/sha "73bdb13ae7a3d004b44bca08be03a3191157a38f"}
        ;; jp-go-dds: デジタル庁デザインシステム(DADS) -- this workspace's BASE
-        ;; design system (CLAUDE.md, repo-wide mandatory 2026-08-05). The
+        ;; design system (AGENTS.md, repo-wide mandatory 2026-08-05). The
         ;; operator console is styled through `jp-go-dds.skin/dds+skin`,
         ;; the compat skin written FOR these cloud-itonami consoles: it
         ;; restyles the existing semantic markup + small class vocabulary
